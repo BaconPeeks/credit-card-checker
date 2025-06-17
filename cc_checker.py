@@ -13,14 +13,19 @@ card_types = {
 def main(number):
     if len(number) < 16:
         raise ValueError('Card number must be at minimum 16 digits')
-
+    
     if not number.isdigit():
         raise ValueError('Card number must only contain digits')
 
-    doubled, remaining = double_digits(number)
-    total = sum(doubled) + sum(remaining)
+    if set(number) == {'0'}:
+        # Reject all zeros
+        return False
 
-    return total % 10 == 0
+    doubled, remaining = double_digits(number)
+
+    total = luhn(doubled, remaining)
+    return total
+
 
 def double_digits(number):
     digits = [int(d) for d in number]
@@ -36,3 +41,9 @@ def double_digits(number):
         doubled.append(digit)
 
     return doubled, remaining
+
+
+def luhn(doubled, remaining):
+    total = sum(doubled) + sum(remaining)
+
+    return total % 10 == 0
